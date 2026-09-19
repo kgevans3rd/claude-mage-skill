@@ -1,0 +1,21 @@
+{
+  "name": "mage-ascension",
+  "owner": {
+    "name": "kgevans3rd",
+    "url": "https://github.com/kgevans3rd"
+  },
+  "metadata": {
+    "description": "Mage: The Ascension 2nd Edition as a Claude Code skill, built on byo-rulebook.",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "mage",
+      "source": "./",
+      "description": "Storyteller assistant for persistent Mage: The Ascension 2nd Edition chronicles — magick, Paradox, combat, mage creation and session state. Ships no rulebook values; reads them from your own copy.",
+      "version": "1.0.0",
+      "license": "AGPL-3.0-or-later",
+      "keywords": ["mage", "mage-the-ascension", "world-of-darkness", "storyteller", "ttrpg"]
+    }
+  ]
+}

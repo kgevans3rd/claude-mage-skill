@@ -1,0 +1,4 @@
+# Belt and braces: even if this module is copied out of the repository, its
+# values do not travel with it.
+*.local.json
+.toolkit

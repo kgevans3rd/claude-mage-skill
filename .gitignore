@@ -1,0 +1,23 @@
+# The book itself. Never commit a rulebook.
+*.pdf
+*.epub
+
+# Extracted and hand-entered rulebook values. These are the publisher's tables;
+# the module is publishable precisely because they are not in it.
+*.local.json
+
+# Rendered pages are pages of the book.
+page-renders/
+*.png
+!skills/mage/**/icons/*.png
+
+# The toolkit is a checkout, not part of this repository. Clone it:
+#   git clone https://github.com/kgevans3rd/byo-rulebook.git _toolkit
+_toolkit/
+
+# Where a toolkit checkout lives is a property of the machine, not the module.
+.toolkit
+
+__pycache__/
+*.pyc
+.venv/

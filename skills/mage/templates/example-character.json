@@ -1,0 +1,25 @@
+{
+  "name": "Rowan Ash",
+  "tradition": "Verbena",
+  "concept": "Hedge-witch midwife",
+  "essence": "Pattern",
+  "nature": "Caregiver",
+  "demeanor": "Bravo",
+  "attributes": {
+    "physical": { "Strength": 3, "Stamina": 3, "Dexterity": 4 },
+    "social":   { "Charisma": 3, "Manipulation": 2, "Appearance": 3 },
+    "mental":   { "Perception": 2, "Intelligence": 2, "Wits": 2 }
+  },
+  "abilities": {
+    "talents":    { "Alertness": 3, "Athletics": 3, "Awareness": 3, "Brawl": 2, "Dodge": 2 },
+    "skills":     { "Melee": 3, "Stealth": 2, "Survival": 2, "Crafts": 2 },
+    "knowledges": { "Medicine": 3, "Occult": 2 }
+  },
+  "backgrounds": { "Avatar": 3, "Mentor": 2, "Node": 2 },
+  "spheres": { "Life": 3, "Prime": 2, "Forces": 1 },
+  "arete": 1,
+  "willpower": 5,
+  "quintessence": 0,
+  "paradox": 0,
+  "health": 0
+}

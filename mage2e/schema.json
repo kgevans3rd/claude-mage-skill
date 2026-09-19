@@ -1,0 +1,811 @@
+{
+  "schema_version": 1,
+  "system": "mage",
+  "_comment": "Mage: The Ascension 2nd Edition (White Wolf, WW4300) as a byo-rulebook module. This file ships the STRUCTURE of the game — what each table is, where it is printed, and how to check it — and no rulebook values. The values come from the reader's own copy and land in corrections.local.json / tables.local.json, neither of which is committed. See README.md for why every locator here is 'manual'.",
+  "source": {
+    "title": "Mage: The Ascension, 2nd Edition",
+    "publisher": "White Wolf Game Studio",
+    "product_code": "WW4300",
+    "edition": "2e",
+    "page_offset": 17,
+    "pdf_pages": 314,
+    "text_layer": "none",
+    "text_layer_note": "The reference scan (Acrobat 5.0 Image Conversion, 2003) carries NO text layer at all: 'pdftotext' over all 314 pages yields zero characters. Every locator below is therefore 'manual'. page_offset 17 was calibrated against the pages the book prints on itself (PDF 19 = printed 2, PDF 22 = printed 5) and verified at both ends of the book; 'page' fields below are PRINTED page numbers, so PDF page = page + 17."
+  },
+  "tables": [
+    {
+      "id": "difficulty",
+      "title": "Difficulty ratings",
+      "placeholder": "{{mage:table:difficulty@p.80}}",
+      "page": 80,
+      "locator": {
+        "style": "manual"
+      },
+      "columns": [
+        {
+          "name": "difficulty",
+          "type": "int"
+        },
+        {
+          "name": "descriptor",
+          "type": "label"
+        }
+      ],
+      "invariants": [
+        "rows:7",
+        "unique:difficulty",
+        "monotonic_asc:difficulty"
+      ],
+      "note": "Image-only scan. Difficulties 2 and 10 exist but are printed as prose below the chart, not as rows, so they are not included here; the standard difficulty is 6."
+    },
+    {
+      "id": "success_degrees",
+      "title": "Degrees of success",
+      "placeholder": "{{mage:table:success_degrees@p.80}}",
+      "page": 80,
+      "locator": {
+        "style": "manual"
+      },
+      "columns": [
+        {
+          "name": "successes",
+          "type": "int"
+        },
+        {
+          "name": "degree",
+          "type": "label"
+        }
+      ],
+      "invariants": [
+        "rows:5",
+        "unique:successes",
+        "monotonic_asc:successes"
+      ],
+      "note": "Image-only scan."
+    },
+    {
+      "id": "health_levels",
+      "title": "Health levels",
+      "placeholder": "{{mage:table:health_levels@p.139}}",
+      "page": 139,
+      "locator": {
+        "style": "manual"
+      },
+      "columns": [
+        {
+          "name": "level",
+          "type": "label"
+        },
+        {
+          "name": "penalty",
+          "type": "signed_int"
+        },
+        {
+          "name": "effect",
+          "type": "label"
+        }
+      ],
+      "invariants": [
+        "rows:7",
+        "unique:level"
+      ],
+      "extraction_risk": "high",
+      "note": "Image-only scan, and the printed chart is a bare column: seven level labels against only five printed penalties, because Bruised and Incapacitated have no number. CONFIRMED 2026-09-19 by the book's owner that Incapacitated is n/a; Bruised = 0 rests on the effect line printed beside it ('no action penalties'). A positional parser would silently shift every row by one, which is why this is entered by hand and why extraction_risk stays high.",
+      "confirmed": "2026-09-19, against the printed page, by the book's owner"
+    },
+    {
+      "id": "healing_times",
+      "title": "Normal healing times",
+      "placeholder": "{{mage:table:healing_times@p.265}}",
+      "page": 265,
+      "locator": {
+        "style": "manual"
+      },
+      "columns": [
+        {
+          "name": "level",
+          "type": "label"
+        },
+        {
+          "name": "time",
+          "type": "label"
+        }
+      ],
+      "invariants": [
+        "rows:7",
+        "unique:level"
+      ],
+      "note": "Image-only scan."
+    },
+    {
+      "id": "casting_difficulty",
+      "title": "Casting difficulty by Effect type",
+      "placeholder": "{{mage:table:casting_difficulty@p.169}}",
+      "page": 169,
+      "locator": {
+        "style": "manual"
+      },
+      "columns": [
+        {
+          "name": "effect_type",
+          "type": "label"
+        },
+        {
+          "name": "sphere_bonus",
+          "type": "int"
+        }
+      ],
+      "invariants": [
+        "rows:3",
+        "unique:effect_type",
+        "monotonic_asc:sphere_bonus"
+      ],
+      "note": "Image-only scan. From the Casting Magick chart. Difficulty = highest Sphere used + this value; minimum difficulty 3, and the modifier total is capped at +/-3."
+    },
+    {
+      "id": "paradox_botch",
+      "title": "Paradox gained on a botch",
+      "placeholder": "{{mage:table:paradox_botch@p.169}}",
+      "page": 169,
+      "locator": {
+        "style": "manual"
+      },
+      "columns": [
+        {
+          "name": "botch_type",
+          "type": "label"
+        },
+        {
+          "name": "flat",
+          "type": "int"
+        },
+        {
+          "name": "per_sphere_dot",
+          "type": "int"
+        }
+      ],
+      "invariants": [
+        "rows:3",
+        "unique:botch_type"
+      ],
+      "note": "Image-only scan. Printed as three prose lines on the Casting Magick chart rather than as a ruled table; split here into a flat component and a per-dot component so it can be computed. Paradox = flat + per_sphere_dot x (dots in the highest Sphere used)."
+    },
+    {
+      "id": "magick_difficulty_mods",
+      "title": "Magick difficulty modifiers",
+      "placeholder": "{{mage:table:magick_difficulty_mods@p.171}}",
+      "page": 171,
+      "locator": {
+        "style": "manual"
+      },
+      "columns": [
+        {
+          "name": "activity",
+          "type": "label"
+        },
+        {
+          "name": "modifier",
+          "type": "label"
+        }
+      ],
+      "invariants": [
+        "rows:15",
+        "unique:activity"
+      ],
+      "note": "Image-only scan. Modifier is kept as a label, not signed_int, because several entries are ranges ('-1 to -3') or conditional ('-1 per point spent, max. 3/turn'). Chart header: maximum modifier +/-3, minimum difficulty 3, maximum 10."
+    },
+    {
+      "id": "magick_success_degrees",
+      "title": "Degrees of success for magick",
+      "placeholder": "{{mage:table:magick_success_degrees@p.171}}",
+      "page": 171,
+      "locator": {
+        "style": "manual"
+      },
+      "columns": [
+        {
+          "name": "degree",
+          "type": "label"
+        },
+        {
+          "name": "threshold",
+          "type": "label"
+        },
+        {
+          "name": "outcome",
+          "type": "label"
+        }
+      ],
+      "invariants": [
+        "rows:5",
+        "unique:degree"
+      ],
+      "note": "Image-only scan. Printed as a bulleted list, not a ruled table; the threshold column is the percentage of required successes the book states for each degree."
+    },
+    {
+      "id": "damage_duration",
+      "title": "Damage and duration by successes",
+      "placeholder": "{{mage:table:damage_duration@p.171}}",
+      "page": 171,
+      "locator": {
+        "style": "manual"
+      },
+      "columns": [
+        {
+          "name": "successes",
+          "type": "label"
+        },
+        {
+          "name": "damage",
+          "type": "label"
+        },
+        {
+          "name": "duration",
+          "type": "label"
+        }
+      ],
+      "invariants": [
+        "rows:6",
+        "unique:successes"
+      ],
+      "note": "Image-only scan."
+    },
+    {
+      "id": "gauntlet",
+      "title": "Spirit Gauntlet chart",
+      "placeholder": "{{mage:table:gauntlet@p.170}}",
+      "page": 170,
+      "locator": {
+        "style": "manual"
+      },
+      "columns": [
+        {
+          "name": "area",
+          "type": "label"
+        },
+        {
+          "name": "difficulty",
+          "type": "int"
+        },
+        {
+          "name": "successes",
+          "type": "int"
+        }
+      ],
+      "invariants": [
+        "rows:6",
+        "unique:area",
+        "monotonic_asc:difficulty"
+      ],
+      "note": "Image-only scan. Technocracy labs carry a footnote: Technocratic dimensional science treats these like Nodes."
+    },
+    {
+      "id": "correspondence_ranges",
+      "title": "Correspondence ranges",
+      "placeholder": "{{mage:table:correspondence_ranges@p.170}}",
+      "page": 170,
+      "locator": {
+        "style": "manual"
+      },
+      "columns": [
+        {
+          "name": "successes",
+          "type": "label"
+        },
+        {
+          "name": "range_or_connection",
+          "type": "label"
+        }
+      ],
+      "invariants": [
+        "rows:6",
+        "unique:successes"
+      ],
+      "note": "Image-only scan. The chart says to use range or connection, not both."
+    },
+    {
+      "id": "time_ranges",
+      "title": "Time Sphere effect timespans",
+      "placeholder": "{{mage:table:time_ranges@p.170}}",
+      "page": 170,
+      "locator": {
+        "style": "manual"
+      },
+      "columns": [
+        {
+          "name": "successes",
+          "type": "label"
+        },
+        {
+          "name": "timespan",
+          "type": "label"
+        }
+      ],
+      "invariants": [
+        "rows:7",
+        "unique:successes"
+      ],
+      "extraction_risk": "high",
+      "note": "Image-only scan. The five-success row prints as a bare '100' with no unit, between '50 years' and '500 years'. CONFIRMED 2026-09-19 by the book's owner as 100 years — the unit was dropped in the printing, not in the transcription. extraction_risk stays high because the missing unit would defeat a parser again, not because the value is in doubt.",
+      "confirmed": "2026-09-19, against the printed page, by the book's owner"
+    },
+    {
+      "id": "spheres",
+      "title": "The nine Spheres, levels one to five",
+      "placeholder": "{{mage:table:spheres@p.295}}",
+      "page": 295,
+      "locator": {
+        "style": "manual"
+      },
+      "columns": [
+        {
+          "name": "sphere",
+          "type": "label"
+        },
+        {
+          "name": "rating",
+          "type": "int"
+        },
+        {
+          "name": "effects",
+          "type": "label"
+        }
+      ],
+      "invariants": [
+        "rows:45",
+        "unique_pairs:sphere,rating"
+      ],
+      "note": "Image-only scan. From the Magick Cheat Sheet: nine Spheres x five ratings = 45 rows. Where a rating lists several named Effects the book stacks them under one dot rating; they are joined with '; ' in the effects cell."
+    },
+    {
+      "id": "attributes",
+      "title": "Attributes by category",
+      "placeholder": "{{mage:table:attributes@p.138}}",
+      "page": 138,
+      "locator": {
+        "style": "manual"
+      },
+      "columns": [
+        {
+          "name": "category",
+          "type": "label"
+        },
+        {
+          "name": "attribute",
+          "type": "label"
+        }
+      ],
+      "invariants": [
+        "rows:9",
+        "unique:attribute"
+      ],
+      "note": "Image-only scan."
+    },
+    {
+      "id": "chargen_priorities",
+      "title": "Character creation allocations",
+      "placeholder": "{{mage:table:chargen_priorities@p.138}}",
+      "page": 138,
+      "locator": {
+        "style": "manual"
+      },
+      "columns": [
+        {
+          "name": "step",
+          "type": "label"
+        },
+        {
+          "name": "allocation",
+          "type": "label"
+        }
+      ],
+      "invariants": [
+        "rows:8",
+        "unique:step"
+      ],
+      "note": "Image-only scan. The printed chart heads its third step 'Step Three: Select Attributes' and warns 'No Attribute higher than 3 at this stage' where both should read Abilities — a known erratum in this printing, recorded as printed with the correction noted in corrections.local.json."
+    },
+    {
+      "id": "traditions",
+      "title": "The Traditions and their specialty Spheres",
+      "placeholder": "{{mage:table:traditions@p.138}}",
+      "page": 138,
+      "locator": {
+        "style": "manual"
+      },
+      "columns": [
+        {
+          "name": "tradition",
+          "type": "label"
+        },
+        {
+          "name": "sphere",
+          "type": "label"
+        }
+      ],
+      "invariants": [
+        "rows:10",
+        "unique:tradition"
+      ],
+      "note": "Image-only scan. Ten rows: the nine Traditions plus the Hollow Ones, who are not a formal Tradition and whose specialty Sphere is printed as 'Any'."
+    },
+    {
+      "id": "backgrounds",
+      "title": "Backgrounds",
+      "placeholder": "{{mage:table:backgrounds@p.139}}",
+      "page": 139,
+      "locator": {
+        "style": "manual"
+      },
+      "columns": [
+        {
+          "name": "background",
+          "type": "label"
+        },
+        {
+          "name": "summary",
+          "type": "label"
+        }
+      ],
+      "invariants": [
+        "rows:14",
+        "unique:background"
+      ],
+      "note": "Image-only scan. Summaries are one-line paraphrases of what each Background covers mechanically, not the book's printed descriptions."
+    },
+    {
+      "id": "freebie_costs",
+      "title": "Freebie point costs",
+      "placeholder": "{{mage:table:freebie_costs@p.139}}",
+      "page": 139,
+      "locator": {
+        "style": "manual"
+      },
+      "columns": [
+        {
+          "name": "trait",
+          "type": "label"
+        },
+        {
+          "name": "cost",
+          "type": "label"
+        }
+      ],
+      "invariants": [
+        "rows:7",
+        "unique:trait"
+      ],
+      "note": "Image-only scan. Cost is a label because Quintessence is priced per four dots rather than per dot."
+    },
+    {
+      "id": "xp_costs",
+      "title": "Experience point costs",
+      "placeholder": "{{mage:table:xp_costs@p.139}}",
+      "page": 139,
+      "locator": {
+        "style": "manual"
+      },
+      "columns": [
+        {
+          "name": "trait",
+          "type": "label"
+        },
+        {
+          "name": "cost",
+          "type": "label"
+        }
+      ],
+      "invariants": [
+        "rows:9",
+        "unique:trait"
+      ],
+      "note": "Image-only scan. Cost is a label because most entries are multipliers on the current rating rather than flat numbers."
+    },
+    {
+      "id": "melee_weapons",
+      "title": "Melee weapons table",
+      "placeholder": "{{mage:table:melee_weapons@p.262}}",
+      "page": 262,
+      "locator": {
+        "style": "manual"
+      },
+      "columns": [
+        {
+          "name": "weapon",
+          "type": "label"
+        },
+        {
+          "name": "difficulty",
+          "type": "int"
+        },
+        {
+          "name": "damage",
+          "type": "label"
+        },
+        {
+          "name": "conceal",
+          "type": "label"
+        }
+      ],
+      "invariants": [
+        "rows:6",
+        "unique:weapon",
+        "monotonic_asc:difficulty"
+      ],
+      "note": "Image-only scan, and the chart is printed on a tilted 'sheet of paper' graphic, so the value columns sit visibly higher than the labels they belong to. Conceal codes: P pocket, J jacket, T trenchcoat, N cannot be concealed."
+    },
+    {
+      "id": "brawling",
+      "title": "Brawling table",
+      "placeholder": "{{mage:table:brawling@p.262}}",
+      "page": 262,
+      "locator": {
+        "style": "manual"
+      },
+      "columns": [
+        {
+          "name": "maneuver",
+          "type": "label"
+        },
+        {
+          "name": "difficulty",
+          "type": "int"
+        },
+        {
+          "name": "damage",
+          "type": "label"
+        }
+      ],
+      "invariants": [
+        "rows:6",
+        "unique:maneuver"
+      ],
+      "note": "Image-only scan. Bite and Claw carry the footnote 'when applicable'."
+    },
+    {
+      "id": "do_strike",
+      "title": "Do strike chart",
+      "placeholder": "{{mage:table:do_strike@p.263}}",
+      "page": 263,
+      "locator": {
+        "style": "manual"
+      },
+      "columns": [
+        {
+          "name": "maneuver",
+          "type": "label"
+        },
+        {
+          "name": "difficulty",
+          "type": "int"
+        },
+        {
+          "name": "damage",
+          "type": "label"
+        }
+      ],
+      "invariants": [
+        "rows:4",
+        "unique:maneuver",
+        "monotonic_asc:difficulty"
+      ],
+      "note": "Image-only scan."
+    },
+    {
+      "id": "firearms",
+      "title": "Firearms table",
+      "placeholder": "{{mage:table:firearms@p.263}}",
+      "page": 263,
+      "locator": {
+        "style": "manual"
+      },
+      "columns": [
+        {
+          "name": "type",
+          "type": "label"
+        },
+        {
+          "name": "example",
+          "type": "label"
+        },
+        {
+          "name": "difficulty",
+          "type": "int"
+        },
+        {
+          "name": "damage",
+          "type": "int"
+        },
+        {
+          "name": "range",
+          "type": "int"
+        },
+        {
+          "name": "rate",
+          "type": "int"
+        },
+        {
+          "name": "clip",
+          "type": "label"
+        },
+        {
+          "name": "conceal",
+          "type": "label"
+        }
+      ],
+      "invariants": [
+        "rows:11",
+        "unique:type"
+      ],
+      "note": "Image-only scan, but this is the one properly ruled table in the combat chapter, so the columns are unambiguous. Clip is a label because most entries are of the form '17+1' (magazine plus one chambered). Types marked * in the book can fire full-auto or bursts; the crossbow carries a separate ** footnote."
+    },
+    {
+      "id": "armor",
+      "title": "Armor",
+      "placeholder": "{{mage:table:armor@p.263}}",
+      "page": 263,
+      "locator": {
+        "style": "manual"
+      },
+      "columns": [
+        {
+          "name": "class",
+          "type": "label"
+        },
+        {
+          "name": "rating",
+          "type": "int"
+        },
+        {
+          "name": "penalty",
+          "type": "int"
+        }
+      ],
+      "invariants": [
+        "rows:5",
+        "unique:class",
+        "monotonic_asc:rating",
+        "monotonic_asc:penalty"
+      ],
+      "note": "Image-only scan."
+    },
+    {
+      "id": "firefight_complications",
+      "title": "Firefight complications",
+      "placeholder": "{{mage:table:firefight_complications@p.262}}",
+      "page": 262,
+      "locator": {
+        "style": "manual"
+      },
+      "columns": [
+        {
+          "name": "complication",
+          "type": "label"
+        },
+        {
+          "name": "difficulty",
+          "type": "label"
+        },
+        {
+          "name": "dice",
+          "type": "label"
+        }
+      ],
+      "invariants": [
+        "rows:16",
+        "unique:complication"
+      ],
+      "extraction_risk": "high",
+      "note": "Image-only scan on a tilted graphic. Sixteen labels against fifteen printed entries in the Dice column: 'Multiple shots' has no dice entry, visible only as a gap in the column. CONFIRMED against the printed page by the book's owner (2026-09-19) — Multiple shots takes a difficulty modifier only, and the rows below it are Full-auto +3/+10, Three-round burst +1/+3, Spray 5 +1/yard/+10. extraction_risk stays high because the page remains hostile to any parser, not because the values are in doubt. Difficulty is a label because two entries are formulae ('+1/extra shot', '5 +1/yard').",
+      "confirmed": "2026-09-19, against the printed page, by the book's owner"
+    },
+    {
+      "id": "dodge_terrain",
+      "title": "Dodge difficulty by terrain",
+      "placeholder": "{{mage:table:dodge_terrain@p.263}}",
+      "page": 263,
+      "locator": {
+        "style": "manual"
+      },
+      "columns": [
+        {
+          "name": "difficulty",
+          "type": "int"
+        },
+        {
+          "name": "terrain",
+          "type": "label"
+        }
+      ],
+      "invariants": [
+        "rows:5",
+        "unique:difficulty",
+        "monotonic_asc:difficulty"
+      ],
+      "note": "Image-only scan. These are firefight dodges; the normal hand-to-hand dodge difficulty is 6, printed as a sentence above the chart."
+    },
+    {
+      "id": "fire_difficulty",
+      "title": "Fire — difficulty by heat",
+      "placeholder": "{{mage:table:fire_difficulty@p.265}}",
+      "page": 265,
+      "locator": {
+        "style": "manual"
+      },
+      "columns": [
+        {
+          "name": "difficulty",
+          "type": "int"
+        },
+        {
+          "name": "heat",
+          "type": "label"
+        }
+      ],
+      "invariants": [
+        "rows:5",
+        "unique:difficulty",
+        "monotonic_asc:difficulty"
+      ],
+      "note": "Image-only scan."
+    },
+    {
+      "id": "fire_wounds",
+      "title": "Fire — health levels by size",
+      "placeholder": "{{mage:table:fire_wounds@p.265}}",
+      "page": 265,
+      "locator": {
+        "style": "manual"
+      },
+      "columns": [
+        {
+          "name": "wounds",
+          "type": "int"
+        },
+        {
+          "name": "size",
+          "type": "label"
+        }
+      ],
+      "invariants": [
+        "rows:3",
+        "unique:wounds",
+        "monotonic_asc:wounds"
+      ],
+      "note": "Image-only scan. The book writes the wound counts as words (One, Two, Three); stored as integers so they can be applied."
+    },
+    {
+      "id": "drowning",
+      "title": "Drowning and suffocation",
+      "placeholder": "{{mage:table:drowning@p.265}}",
+      "page": 265,
+      "locator": {
+        "style": "manual"
+      },
+      "columns": [
+        {
+          "name": "stamina",
+          "type": "int"
+        },
+        {
+          "name": "holding_breath",
+          "type": "label"
+        }
+      ],
+      "invariants": [
+        "rows:8",
+        "unique:stamina",
+        "monotonic_asc:stamina"
+      ],
+      "note": "Image-only scan."
+    }
+  ],
+  "cross_checks": [],
+  "invariant_types": {
+    "rows:N": "the table must have exactly N rows",
+    "unique:COL": "values in COL must be distinct",
+    "unique_pairs:A,B": "the (A,B) pairs must be distinct",
+    "monotonic_asc:COL": "COL must be non-decreasing down the table",
+    "monotonic_desc:COL": "COL must be non-increasing down the table"
+  }
+}
