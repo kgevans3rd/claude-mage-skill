@@ -15,8 +15,14 @@ accept `--seed` so a result can be reproduced in a bug report.
 python3 ${CLAUDE_SKILL_DIR}/scripts/lookup.py --status      # run this first, once per session
 python3 ${CLAUDE_SKILL_DIR}/scripts/lookup.py --list        # every cited table, ! = unfilled
 python3 ${CLAUDE_SKILL_DIR}/scripts/lookup.py firearms
+python3 ${CLAUDE_SKILL_DIR}/scripts/lookup.py bos:merits_flaws
 python3 ${CLAUDE_SKILL_DIR}/scripts/lookup.py --search quintessence
 ```
+
+Core tables have bare ids (`spheres`, `firearms`). Supplement tables are
+namespaced by their book: `bos:` for the players guide, `tech:` for the
+Technocracy guide. `--status` shows which modules are installed and filled;
+`--search` covers all of them.
 
 `--status` prints which book the values came from and how many tables are
 filled. Anything printed by `lookup.py <table>` is quotable at the table,
@@ -100,12 +106,28 @@ python3 ${CLAUDE_SKILL_DIR}/scripts/character.py backgrounds
 python3 ${CLAUDE_SKILL_DIR}/scripts/character.py validate --file <sheet>.json
 python3 ${CLAUDE_SKILL_DIR}/scripts/character.py cost --trait Spheres
 python3 ${CLAUDE_SKILL_DIR}/scripts/character.py cost --trait Arete --current 2 --xp
+
+# Merits and Flaws (supplements only — the core book has none)
+python3 ${CLAUDE_SKILL_DIR}/scripts/character.py merits
+python3 ${CLAUDE_SKILL_DIR}/scripts/character.py merits --category Supernatural
+python3 ${CLAUDE_SKILL_DIR}/scripts/character.py flaws --book tech
+python3 ${CLAUDE_SKILL_DIR}/scripts/character.py flaws --name mentor
 ```
+
+`--book` is `all` (default), `bos` or `tech`. Where a name appears in both
+books at different costs, the players guide entry wins and the clash is
+reported rather than resolved silently.
 
 `validate` checks the 7/5/3 and 13/9/5 spreads (allowing for the free dot in
 each Attribute), the creation cap of 3 on Abilities, the 7 Background dots, the
 5 Sphere dots plus the Tradition's free one, and that named Spheres and
 Backgrounds actually exist. It exits 1 with a list when something is wrong.
+
+If the sheet has `merits` or `flaws`, it also checks every entry exists, that
+Flaws stay within the 7-point cap, that variable-cost entries name a value
+inside their range, that Merits fit the freebie budget (15 + Flaws, ceiling 22),
+and that no mutually exclusive pair is taken. Entries are plain names, or
+`{"name": "Past Life", "points": 3}` where the cost is a range.
 
 `templates/example-character.json` is a complete, valid sheet to copy.
 

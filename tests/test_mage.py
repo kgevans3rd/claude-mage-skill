@@ -185,5 +185,122 @@ class TestAgainstTheBook(unittest.TestCase):
             seen = int(penalty)
 
 
+def supplements_filled():
+    try:
+        reg = _bootstrap.registry()
+        return any(k.startswith("bos:") for k in reg)
+    except SystemExit:
+        return False
+
+
+@unittest.skipUnless(supplements_filled(),
+                     "Book of Shadows module not filled on this machine")
+class TestMeritsAndFlaws(unittest.TestCase):
+    """Merits and Flaws are not in the core book; these guard the supplements."""
+
+    @classmethod
+    def setUpClass(cls):
+        import character
+        cls.C = character
+        cls.rows = _bootstrap.get("bos:merits_flaws")
+
+    def test_core_rulebook_does_not_claim_merits_and_flaws(self):
+        # The core module must not grow a merits table by accident: the book
+        # genuinely has none, and inventing one would be the worst kind of bug.
+        core = json.loads((_bootstrap.module_dir() / "schema.json").read_text(encoding="utf-8"))
+        ids = {t["id"] for t in core["tables"]}
+        self.assertNotIn("merits_flaws", ids)
+
+    def test_every_entry_is_a_merit_or_a_flaw(self):
+        for name, cost, typ, cat in self.rows:
+            with self.subTest(entry=name):
+                self.assertIn(typ, ("Merit", "Flaw", "Merit or Flaw"))
+                self.assertTrue(cat)
+                lo, hi = self.C.cost_bounds(cost)
+                if lo is None:          # only the dual entry may be unparseable
+                    self.assertEqual(typ, "Merit or Flaw", f"{name}: cost {cost!r}")
+                else:
+                    self.assertLessEqual(lo, hi)
+                    self.assertGreaterEqual(lo, 1)
+
+    def test_names_are_unique_within_a_book(self):
+        names = [r[0].lower() for r in self.rows]
+        self.assertEqual(len(names), len(set(names)))
+
+    def test_general_list_wins_a_cross_book_name_clash(self):
+        catalog, ambiguous = self.C._catalog()
+        self.assertTrue(ambiguous, "expected at least one name in both books")
+        for key in ambiguous:
+            self.assertEqual(catalog[key][4], "bos",
+                             f"{key}: the players guide entry must win")
+
+    def test_flaw_cap_is_enforced(self):
+        self.assertEqual(self.C.MAX_FLAW_POINTS, 7)
+        self.assertEqual(self.C.MAX_FREEBIES, 22)
+
+    def test_cost_bounds_parses_ranges(self):
+        self.assertEqual(self.C.cost_bounds("3"), (3, 3))
+        self.assertEqual(self.C.cost_bounds("1-5"), (1, 5))
+        self.assertEqual(self.C.cost_bounds("3-7 (Merit) or 2-6 (Flaw)"), (None, None))
+
+    def test_a_sheet_over_the_flaw_cap_is_rejected(self):
+        import io, contextlib, tempfile
+        sheet = json.loads(
+            (ROOT / "skills" / "mage" / "templates" / "example-character.json")
+            .read_text(encoding="utf-8"))
+        sheet["flaws"] = ["Driving Goal", "Dark Fate", "Blind"]   # 3 + 5 + 6
+        sheet["merits"] = []
+        f = tempfile.NamedTemporaryFile("w", suffix=".json", delete=False)
+        json.dump(sheet, f); f.close()
+
+        class A:
+            file = f.name
+            json = True
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            self.C.cmd_validate(A())
+        out = json.loads(buf.getvalue())
+        self.assertFalse(out["ok"])
+        self.assertTrue(any("cap is 7" in p for p in out["problems"]), out["problems"])
+
+    def test_example_character_with_merits_validates(self):
+        import io, contextlib
+        sheet = ROOT / "skills" / "mage" / "templates" / "example-character.json"
+
+        class A:
+            file = str(sheet)
+            json = True
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            self.C.cmd_validate(A())
+        self.assertTrue(json.loads(buf.getvalue())["ok"], buf.getvalue())
+
+
+@unittest.skipUnless(supplements_filled(), "supplement modules not filled")
+class TestModuleSeparation(unittest.TestCase):
+
+    def test_each_module_declares_its_own_page_offset(self):
+        seen = {}
+        for name, mod in [( _bootstrap.CORE, _bootstrap.module_dir())] + _bootstrap.supplement_dirs():
+            sch = json.loads((mod / "schema.json").read_text(encoding="utf-8"))
+            seen[name] = sch["source"]["page_offset"]
+        # The core scan is offset 17; both supplements are 1. A shared offset
+        # would mean someone merged two books into one module.
+        self.assertEqual(seen[_bootstrap.CORE], 17)
+        self.assertEqual(seen["bookofshadows"], 1)
+
+    def test_supplement_ids_are_namespaced(self):
+        reg = _bootstrap.registry()
+        self.assertIn("spheres", reg)                 # core stays bare
+        self.assertIn("bos:merits_flaws", reg)
+        self.assertIn("tech:merits_flaws", reg)
+        self.assertIsNot(reg["bos:merits_flaws"], reg["tech:merits_flaws"])
+
+    def test_unknown_table_names_what_is_available(self):
+        with self.assertRaises(Exception) as ctx:
+            _bootstrap.get("merits_flaws")            # unprefixed: must not resolve
+        self.assertIn("bos:merits_flaws", str(ctx.exception))
+
+
 if __name__ == "__main__":
     unittest.main()

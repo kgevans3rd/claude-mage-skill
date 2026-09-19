@@ -25,13 +25,35 @@ HERE = Path(__file__).resolve().parent            # skills/mage/scripts
 SKILL_DIR = HERE.parent                            # skills/mage
 REPO_ROOT = SKILL_DIR.parent.parent                # repository root
 
+# The core rulebook, then the supplements. Each is a separate byo-rulebook
+# module because a module is scoped to one book: its title, its page offset and
+# its text layer are all properties of that printing, and merging two books
+# into one schema would make every citation ambiguous.
+#
+# Core table ids stay bare ('spheres'); a supplement's are prefixed with its
+# schema "system" value ('bos:merits_flaws'), because the two supplements both
+# define merits_flaws and silently shadowing one with the other is exactly the
+# kind of wrong-rules-for-weeks failure this design exists to prevent.
+CORE = "mage2e"
+SUPPLEMENTS = ("bookofshadows", "technocracy")
+
 
 def module_dir() -> Path:
-    """The system module this skill reads its rulebook values from."""
+    """The core system module this skill reads its rulebook values from."""
     env = os.environ.get("MAGE_MODULE", "").strip()
     if env:
         return Path(env).expanduser().resolve()
-    return REPO_ROOT / "mage2e"
+    return REPO_ROOT / CORE
+
+
+def supplement_dirs():
+    """Every supplement module present on this machine, in declared order."""
+    out = []
+    for name in SUPPLEMENTS:
+        d = REPO_ROOT / name
+        if (d / "schema.json").is_file():
+            out.append((name, d))
+    return out
 
 
 def _candidates(mod: Path):
@@ -114,3 +136,72 @@ def run(main_fn, argv=None):
         print(str(exc).rstrip(), file=sys.stderr)
         print("\n  Nothing was rolled. Fill the module and try again.", file=sys.stderr)
         return EXIT_UNAVAILABLE
+
+
+# ── Supplement modules ────────────────────────────────────────────────────
+# toolkit/tables.py is a singleton: bind() points it at one module and every
+# later get() reads that one. Rather than fight it, bind each module in turn,
+# snapshot what it loaded, and rebind the core at the end. The snapshot is
+# taken once and cached, so the rebinding happens exactly once per process.
+
+_registry = None
+_prefix_of = {}
+
+
+def _schema(mod: Path) -> dict:
+    import json
+    return json.loads((mod / "schema.json").read_text(encoding="utf-8"))
+
+
+def registry() -> dict:
+    """{table_id: rows} across the core and every supplement present.
+
+    Core ids are bare; a supplement's are prefixed with its schema "system".
+    """
+    global _registry
+    if _registry is not None:
+        return _registry
+
+    T = tables()                       # binds and loads the core
+    merged = dict(T.load())
+    _prefix_of.clear()
+
+    for name, mod in supplement_dirs():
+        prefix = _schema(mod).get("system") or name
+        try:
+            T.bind(mod)
+            for tid, rows in T.load().items():
+                merged[f"{prefix}:{tid}"] = rows
+                _prefix_of[f"{prefix}:{tid}"] = name
+        finally:
+            T.bind(module_dir())       # always leave the core bound
+    T.load(refresh=True)
+
+    _registry = merged
+    return _registry
+
+
+def get(table_id: str):
+    """A table from the core or any supplement, by its (possibly prefixed) id."""
+    reg = registry()
+    if table_id in reg:
+        return reg[table_id]
+    T = tables()
+    raise T.TableUnavailable(
+        f"\n  The '{table_id}' table is not available on this machine.\n"
+        f"\n  Known tables: {', '.join(sorted(reg)) or '(none)'}\n"
+        f"\n  Supplement tables are prefixed with their book's namespace,\n"
+        f"  e.g. 'bos:merits_flaws'. Fill a module from your own copy with:\n"
+        f"      python3 tools/fill_tables.py --module <dir> --pdf /path/to/book.pdf\n")
+
+
+def sources() -> list:
+    """[(module name, schema title, table count)] for everything loaded."""
+    reg = registry()
+    out = [(CORE, _schema(module_dir())["source"]["title"],
+            sum(1 for k in reg if ":" not in k))]
+    for name, mod in supplement_dirs():
+        prefix = _schema(mod).get("system") or name
+        out.append((name, _schema(mod)["source"]["title"],
+                    sum(1 for k in reg if k.startswith(prefix + ":"))))
+    return out

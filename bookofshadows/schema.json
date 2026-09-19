@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "system": "bos",
+
+  "_comment": "The Book of Shadows: The Mage Players Guide (White Wolf) as a byo-rulebook module. Ships structure and citations only. This is where Mage 2nd Edition's Merits and Flaws actually live — they are NOT in the core rulebook, as that book's own index confirms (no 'Merits' entry between Methodologies and Mistridge, no 'Flaws' between First Cabal and Foci).",
+
+  "source": {
+    "title": "The Book of Shadows: The Mage Players Guide",
+    "publisher": "White Wolf Game Studio",
+    "edition": "2e supplement",
+    "page_offset": 1,
+    "pdf_pages": 210,
+    "text_layer": "none",
+    "text_layer_note": "Image-only scan: pdftotext over all 210 pages yields zero characters, exactly as with the core rulebook. Every locator here is therefore 'manual'. page_offset 1 was calibrated from the page numbers the book prints on itself (PDF 31 = printed 30, PDF 47 = printed 46), NOT from the contents page, which would have given 2 and put every citation one page out."
+  },
+
+  "tables": [
+    {
+      "id": "merits_flaws",
+      "title": "Merits and Flaws",
+      "placeholder": "{{bos:table:merits_flaws@p.29-46}}",
+      "page": 29,
+      "page_range": "29-46",
+      "locator": { "style": "manual" },
+      "columns": [
+        { "name": "name", "type": "label" },
+        { "name": "cost", "type": "label" },
+        { "name": "type", "type": "label" },
+        { "name": "category", "type": "label" }
+      ],
+      "invariants": [ "rows:111", "unique:name" ],
+      "extraction_risk": "high",
+      "note": "Eighteen pages of headed prose entries, not a ruled table — each entry is a heading of the form 'Name: (N pt Merit)' followed by a paragraph. Only name, cost, type and category are recorded; the descriptions are the book's prose and are deliberately not reproduced. Cost is a label because many entries are ranges ('1-5') and one, Spirit Magnet, is both a Merit and a Flaw with different ranges for each. Categories: Psychological, Mental, Awareness, Aptitudes, Supernatural, Mage Ties, Sleeper Society, Physical."
+    },
+    {
+      "id": "merits_flaws_rules",
+      "title": "How Merits and Flaws are bought",
+      "placeholder": "{{bos:table:merits_flaws_rules@p.30}}",
+      "page": 30,
+      "locator": { "style": "manual" },
+      "columns": [
+        { "name": "rule", "type": "label" },
+        { "name": "detail", "type": "label" }
+      ],
+      "invariants": [ "rows:6", "unique:rule" ],
+      "note": "Printed as an introductory passage rather than a chart; split into rules here so the freebie-point arithmetic can be checked. The seven-point Flaw cap is the one that matters mechanically — it puts a hard ceiling of 22 on freebie points."
+    }
+  ],
+
+  "cross_checks": [],
+
+  "invariant_types": {
+    "rows:N": "the table must have exactly N rows",
+    "unique:COL": "values in COL must be distinct",
+    "unique_pairs:A,B": "the (A,B) pairs must be distinct"
+  }
+}

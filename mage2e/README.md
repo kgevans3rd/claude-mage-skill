@@ -97,7 +97,12 @@ note rather than applied silently:
 
 ## What is not here
 
-Merits and Flaws, Rotes, the full Ability list with dot-by-dot descriptions,
+**Merits and Flaws are not in this book at all** — not an omission in this
+module. The core rulebook's own index runs *Methodologies → Mistridge* with no
+"Merits" and *First Cabal → Foci* with no "Flaws". They are in the players
+guide; see the `bookofshadows/` module.
+
+Also absent: Rotes, the full Ability list with dot-by-dot descriptions,
 Charms, spirit statistics and the bestiary. The 29 tables cover the mechanical
 core — resolution, creation, advancement, magick, Paradox, combat and injury —
 which is what the scripts need to run a game. Adding more is a matter of

@@ -10,11 +10,17 @@ fills in the values locally, outside version control. What this repository
 contains is the shape of the game and the code that runs it.
 
 ```
-mage2e/            the byo-rulebook module — 29 cited tables, no values
+mage2e/            core rulebook — 29 cited tables, no values
+bookofshadows/     players guide — Merits and Flaws (not in the core book)
+technocracy/       Technocracy sourcebook — 26 more Merits and Flaws
 skills/mage/       the Claude Code skill: Storyteller prompt, scripts, templates
-tools/             fill the module from your book; render cited pages
-tests/             20 tests; the rules-logic half runs with no book at all
+tools/             fill a module from your book; render or extract cited pages
+tests/             31 tests; the rules-logic third runs with no book at all
 ```
+
+One module per book, because a module is scoped to one printing: its title,
+page offset and text layer all belong to that edition. Core table ids stay bare
+(`spheres`); a supplement's are namespaced (`bos:merits_flaws`).
 
 ## Why it is built this way
 
@@ -39,8 +45,10 @@ git clone <this repo> mage-ascension && cd mage-ascension
 # 1. the toolkit (a checkout, not a copy — so it stays pullable)
 git clone https://github.com/kgevans3rd/byo-rulebook.git _toolkit
 
-# 2. your own copy of the book
-python3 tools/fill_tables.py --module mage2e --pdf ~/books/mage-2e.pdf
+# 2. your own copies of the books (any subset — each is independent)
+python3 tools/fill_tables.py --module mage2e        --pdf ~/books/mage-2e.pdf
+python3 tools/fill_tables.py --module bookofshadows --pdf ~/books/book-of-shadows.pdf
+python3 tools/fill_tables.py --module technocracy   --pdf ~/books/technocracy.pdf
 
 # 3. check
 python3 skills/mage/scripts/lookup.py --status
@@ -66,6 +74,19 @@ python3 tools/render_pages.py --module mage2e --pdf BOOK.pdf --table firearms
 
 `mage2e/README.md` explains this in full, including the three tables where the
 page was genuinely ambiguous and what was done about each.
+
+The Technocracy guide is the exception: its scan *does* carry a text layer, so
+`tools/extract_headed_entries.py` machine-reads its entries and coerces every
+cost against the toolkit's `int` type — which is what caught the two whose
+"1 pt" the OCR had read as "I pt".
+
+### Merits and Flaws are not in the core rulebook
+
+Checked against the core book's own index, not assumed: the M column runs
+*Methodologies → Mistridge*, the F column *First Cabal → Foci*. They live in
+**The Book of Shadows** (111 entries) and, for Union agents, **Guide to the
+Technocracy** (26 more). Without those modules the skill says so rather than
+inventing them.
 
 ## Using it
 
@@ -93,6 +114,7 @@ Arete 4: 4d10 vs diff 8: [6, 3, 7, 1] → BOTCH by 1  [1 one cancelled]
 
 ```bash
 python3 skills/mage/scripts/combat.py attack --pool 6 --weapon "Pistol, Lt."
+python3 skills/mage/scripts/character.py merits --category Supernatural
 python3 skills/mage/scripts/character.py validate --file mage.json
 python3 skills/mage/scripts/lookup.py --search quintessence
 ```

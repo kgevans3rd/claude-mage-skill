@@ -24,14 +24,29 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import _bootstrap  # noqa: E402
 
 
-def schema():
-    return json.loads((_bootstrap.module_dir() / "schema.json").read_text(encoding="utf-8"))
+def schema(mod=None):
+    mod = mod or _bootstrap.module_dir()
+    return json.loads((mod / "schema.json").read_text(encoding="utf-8"))
 
 
-def headers_for(tid, sch):
-    for t in sch["tables"]:
-        if t["id"] == tid:
-            return [c["name"] for c in t["columns"]], t
+def all_specs():
+    """[(table_id, spec, module name, book title)] across core and supplements."""
+    out = []
+    core = schema()
+    for spec in core["tables"]:
+        out.append((spec["id"], spec, _bootstrap.CORE, core["source"]["title"]))
+    for name, mod in _bootstrap.supplement_dirs():
+        sch = schema(mod)
+        prefix = sch.get("system") or name
+        for spec in sch["tables"]:
+            out.append((f"{prefix}:{spec['id']}", spec, name, sch["source"]["title"]))
+    return out
+
+
+def headers_for(tid):
+    for full, spec, _mod, _title in all_specs():
+        if full == tid:
+            return [c["name"] for c in spec["columns"]], spec
     return None, None
 
 
@@ -54,56 +69,67 @@ def main(argv=None):
     ap.add_argument("--json", action="store_true")
     args = ap.parse_args(argv)
 
-    T = _bootstrap.tables()
-    sch = schema()
-    have = set(T.available())
+    have = set(_bootstrap.registry())
 
     if args.status:
-        cited = [t["id"] for t in sch["tables"]]
-        missing = [t for t in cited if t not in have]
-        src = sch["source"]
-        info = {
-            "module": str(_bootstrap.module_dir()),
-            "book": f"{src['title']} ({src.get('edition')})",
-            "page_offset": src.get("page_offset"),
-            "text_layer": src.get("text_layer"),
-            "store": T.source_note(),
-            "cited": len(cited), "filled": len(have), "missing": missing,
-        }
+        specs = all_specs()
+        books = {}
+        for full, spec, mod, title in specs:
+            b = books.setdefault(mod, {"title": title, "cited": 0, "filled": 0, "missing": []})
+            b["cited"] += 1
+            if full in have:
+                b["filled"] += 1
+            else:
+                b["missing"].append(full)
+        for mod in _bootstrap.SUPPLEMENTS:
+            if mod not in books:
+                books[mod] = {"title": "(module not installed)", "cited": 0,
+                              "filled": 0, "missing": []}
         if args.json:
-            print(json.dumps(info, indent=2))
+            print(json.dumps(books, indent=2))
             return 0
-        print(f"module    {info['module']}")
-        print(f"book      {info['book']}")
-        print(f"store     {info['store']}")
-        print(f"tables    {info['filled']}/{info['cited']} filled")
-        if missing:
-            print(f"missing   {', '.join(missing)}")
-            print("\nFill them from your own copy:")
-            print(f"  python3 tools/fill_tables.py --module {_bootstrap.module_dir()} "
-                  f"--pdf /path/to/rulebook.pdf")
+        total_c = sum(b["cited"] for b in books.values())
+        total_f = sum(b["filled"] for b in books.values())
+        for mod, b in books.items():
+            mark = "ok " if b["cited"] and b["filled"] == b["cited"] else "   "
+            print(f"{mark}{mod:<16}{b['filled']:>3}/{b['cited']:<3} {b['title']}")
+            for m in b["missing"]:
+                print(f"      missing: {m}")
+        print(f"\n{total_f}/{total_c} cited tables have values.")
+        if total_f < total_c:
+            print("\nFill a module from your own copy:")
+            print("  python3 tools/fill_tables.py --module <dir> --pdf /path/to/book.pdf")
         else:
-            print("\nEvery cited table has a value. Scripts can quote the book.")
+            print("Scripts can quote every book that is installed.")
+        if "bookofshadows" not in books or not books["bookofshadows"]["filled"]:
+            print("\nNote: Merits and Flaws are NOT in the core rulebook. They are in\n"
+                  "The Book of Shadows; without that module they are unavailable.")
         return 0
 
     if args.list:
-        for t in sch["tables"]:
-            mark = " " if t["id"] in have else "!"
-            print(f"{mark} {t['id']:<26}{t['title']}  (p.{t.get('page')})")
+        cur = None
+        for full, spec, mod, _title in all_specs():
+            if mod != cur:
+                cur = mod
+                print(f"\n{mod}")
+            mark = " " if full in have else "!"
+            pages = spec.get("page_range") or spec.get("page")
+            print(f" {mark} {full:<28}{spec['title']}  (p.{pages})")
         return 0
 
     if args.search:
         needle = args.search.lower()
         hits = 0
-        for t in sch["tables"]:
-            if t["id"] not in have:
+        for full, spec, _mod, _title in all_specs():
+            if full not in have:
                 continue
-            rows = [r for r in T.get(t["id"])
+            rows = [r for r in _bootstrap.get(full)
                     if any(needle in str(c).lower() for c in r)]
             if rows:
-                heads = [c["name"] for c in t["columns"]]
-                print(f"\n── {t['id']}  ({t['title']}, p.{t.get('page')})")
-                show(t["id"], rows, heads)
+                heads = [c["name"] for c in spec["columns"]]
+                pages = spec.get("page_range") or spec.get("page")
+                print(f"\n── {full}  ({spec['title']}, p.{pages})")
+                show(full, rows, heads)
                 hits += len(rows)
         print(f"\n{hits} row(s) matching {args.search!r}.")
         return 0 if hits else 1
@@ -112,15 +138,15 @@ def main(argv=None):
         ap.print_help()
         return 2
 
-    heads, spec = headers_for(args.table, sch)
+    heads, spec = headers_for(args.table)
     if heads is None:
         print(f"error: no table {args.table!r}. Try --list.", file=sys.stderr)
         return 2
-    rows = T.get(args.table)
+    rows = _bootstrap.get(args.table)
     if args.json:
         print(json.dumps([dict(zip(heads, r)) for r in rows], indent=2))
         return 0
-    print(f"{spec['title']}  —  {sch['source']['title']}, p.{spec.get('page')}\n")
+    print(f"{spec['title']}  —  p.{spec.get('page_range') or spec.get('page')}\n")
     show(args.table, rows, heads)
     if spec.get("note"):
         print(f"\nnote: {spec['note']}")

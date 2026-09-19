@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "system": "tech",
+
+  "_comment": "Guide to the Technocracy (White Wolf) as a byo-rulebook module. Ships structure and citations only. Unlike the core rulebook and the players guide, this scan HAS a usable text layer, so its entries are machine-extracted rather than read off page images.",
+
+  "source": {
+    "title": "Guide to the Technocracy",
+    "publisher": "White Wolf Game Studio",
+    "edition": "2e supplement",
+    "page_offset": 1,
+    "pdf_pages": 214,
+    "text_layer": "present",
+    "text_layer_note": "pdftotext yields ~825,000 characters. page_offset 1 was confirmed by locating a known heading: PDF page 171 carries printed page 170. The layer is period OCR and corrupts exactly what byo-rulebook warns about — '1 pt' arrives as 'I pt' twice, and one heading's name has 'Red' misread as 'tied'."
+  },
+
+  "tables": [
+    {
+      "id": "merits_flaws",
+      "title": "Technocracy Merits and Flaws",
+      "placeholder": "{{tech:table:merits_flaws@p.130,164-170}}",
+      "page": 164,
+      "page_range": "130, 164-170",
+      "locator": { "style": "manual" },
+      "columns": [
+        { "name": "name", "type": "label" },
+        { "name": "cost", "type": "label" },
+        { "name": "type", "type": "label" },
+        { "name": "category", "type": "label" }
+      ],
+      "invariants": [ "rows:26", "unique:name" ],
+      "extraction_risk": "high",
+      "note": "Headed prose entries ('Name (N pt Merit)'), not a ruled table, so none of the toolkit's four parsers apply — there is no anchor to walk down from. Declared manual, but the rows are NOT hand-typed: tools/extract_headed_entries.py reads them off the text layer and coerces each cost against the toolkit's int type. That coercion caught both 'I pt' readings. Three entries (category 'Construct') come from the cyborg chapter at printed p.130; the rest from Chapter Six: Character Recruitment. These supplement the players guide's general list rather than replacing it, and several names deliberately duplicate it (Acute Senses, Iron Will) with Technocracy-specific costs."
+    }
+  ],
+
+  "cross_checks": [],
+
+  "invariant_types": {
+    "rows:N": "the table must have exactly N rows",
+    "unique:COL": "values in COL must be distinct"
+  }
+}
