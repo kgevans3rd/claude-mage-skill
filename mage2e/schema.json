@@ -358,6 +358,41 @@
       "note": "Image-only scan. From the Magick Cheat Sheet: nine Spheres x five ratings = 45 rows. Where a rating lists several named Effects the book stacks them under one dot rating; they are joined with '; ' in the effects cell."
     },
     {
+      "id": "rotes",
+      "title": "Rotes — the named Effects of Chapter Eight",
+      "placeholder": "{{mage:table:rotes@p.188-223}}",
+      "page": 188,
+      "page_range": "188-223",
+      "locator": {
+        "style": "manual"
+      },
+      "columns": [
+        {
+          "name": "name",
+          "type": "label"
+        },
+        {
+          "name": "sphere",
+          "type": "label"
+        },
+        {
+          "name": "rating",
+          "type": "label"
+        },
+        {
+          "name": "page",
+          "type": "int"
+        }
+      ],
+      "invariants": [
+        "rows:110",
+        "unique:name",
+        "unique_pairs:name,sphere"
+      ],
+      "extraction_risk": "high",
+      "note": "The book calls these Effects, not Rotes; they are the named, pre-written spells each Sphere section ends with. Thirty-six pages of headed prose, and the required rating is printed as BULLET DOTS before each name (one dot = rank 1) rather than as a number anywhere — a purely visual encoding that no text layer would carry even if this scan had one. Names and pages were cross-checked against the book's own index at printed p.292, which is how several index defects surfaced: truncations ('Matter Pattern Dis.'), differing names ('Lesser Shapeshifting' vs the heading's 'Lesser Shapechanging'), and one wrong page range. The heading always wins; each discrepancy is recorded in corrections.local.json. Rating is a label because three Effects print a range ('•• or •••'). Only name, Sphere, rating and page are carried; the descriptions are the book's prose."
+    },
+    {
       "id": "attributes",
       "title": "Attributes by category",
       "placeholder": "{{mage:table:attributes@p.138}}",

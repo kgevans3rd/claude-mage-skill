@@ -102,12 +102,39 @@ module. The core rulebook's own index runs *Methodologies → Mistridge* with no
 "Merits" and *First Cabal → Foci* with no "Flaws". They are in the players
 guide; see the `bookofshadows/` module.
 
-Also absent: Rotes, the full Ability list with dot-by-dot descriptions,
-Charms, spirit statistics and the bestiary. The 29 tables cover the mechanical
+Also absent: the full Ability list with dot-by-dot descriptions, Charms, spirit
+statistics and the bestiary. The 29 tables cover the mechanical
 core — resolution, creation, advancement, magick, Paradox, combat and injury —
 which is what the scripts need to run a game. Adding more is a matter of
 appending to `schema.json` and `corrections.local.json`; nothing in the code
 needs to change.
+
+## Rotes, and what the dots cost to read
+
+The `rotes` table carries all 110 named Effects of Chapter Eight. It was the
+most awkward thing in the book to extract, for a reason worth recording: **the
+required rating is printed as bullet dots before each name** — `•• Apportation`
+is Correspondence 2 — and appears as a number nowhere on the page. That is a
+purely visual encoding. No text layer would carry it even if this scan had one,
+so there is no version of this table a parser could ever produce.
+
+Names and pages were cross-checked against the book's own index at printed
+p.292, and the index turned out to be wrong in several places. The heading on
+the page always wins, and every discrepancy is recorded in
+`corrections.local.json`:
+
+| Index | Page heading |
+|---|---|
+| Lesser Shapeshifting | Lesser Shapechanging |
+| Embrace the Earth Mom | Embracing the Earth Mother |
+| Matter Pattern Dis. | Matter Pattern Disassociation |
+| Rubbing the Bones | Rubbing of the Bones |
+| Prayer of Healing, pp.204-207 | Prayer of Healing Revelation, p.201 |
+
+That last one is the byo-rulebook warning about citations in miniature: the
+index sends you to the Matter pages for a Life Effect. Two Effects — *Ban* and
+*Seeds of Gold* — have no heading of their own at all and are introduced inside
+another entry, which is why they are easy to miss and why they carry a `why`.
 
 ## Filling it from your own copy
 

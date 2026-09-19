@@ -1,6 +1,6 @@
 ---
 name: mage
-description: "v1.1.0 · Storyteller assistant for running persistent Mage: The Ascension 2nd Edition chronicles. Handles chronicle creation/loading, mage creation and advancement, Arete rolls and Paradox, the three-stage combat turn, Sphere lookups, and session state — all persisted across sessions. Rulebook values are read from the reader's own copy via a byo-rulebook module, never bundled. Invoke with /mage followed by a subcommand, or just speak naturally once a chronicle is loaded. Merits and Flaws come from the Book of Shadows and Guide to the Technocracy modules."
+description: "v1.2.0 · Storyteller assistant for running persistent Mage: The Ascension 2nd Edition chronicles. Handles chronicle creation/loading, mage creation and advancement, Arete rolls and Paradox, the three-stage combat turn, Sphere lookups, and session state — all persisted across sessions. Rulebook values are read from the reader's own copy via a byo-rulebook module, never bundled. Invoke with /mage followed by a subcommand, or just speak naturally once a chronicle is loaded. Merits and Flaws come from the Book of Shadows and Guide to the Technocracy modules."
 tools: Read, Write, Edit, Glob, Bash, AskUserQuestion
 ---
 
@@ -36,8 +36,8 @@ Consequences you must respect:
 - If the module is unfilled, say so plainly and point at
   `tools/fill_tables.py`. Do not improvise a house rule to keep going unless
   the player asks for one, and say clearly that that is what you are doing.
-- Rules no installed module carries (Charms, the full Ability list, Rotes) are
-  simply not available. Say so rather than inventing them.
+- Rules no installed module carries (Charms, the full Ability list) are simply
+  not available. Say so rather than inventing them.
 
 **Merits and Flaws come from the supplements, not the core book.** The core
 rulebook has none — its own index confirms it. They are in `bookofshadows/`
@@ -169,6 +169,24 @@ python3 ${CLAUDE_SKILL_DIR}/scripts/magick.py cast \
 
 `--type` is `coincidental`, `vulgar` or `vulgar-witnessed`. Pass `--modifier`
 for situational adjustments; the script enforces the ±3 cap and the 3–10 range.
+
+**Rotes** — the book calls them Effects — are the named, pre-written spells at
+the end of each Sphere section. A Rote is not a separate mechanic: it is an
+Effect someone already worked out, and casting one is the same roll. Cast by
+name and the Sphere and rating come from the book:
+
+```bash
+python3 ${CLAUDE_SKILL_DIR}/scripts/magick.py cast \
+    --rote "Hermes Portal" --type vulgar-witnessed --arete 4
+python3 ${CLAUDE_SKILL_DIR}/scripts/magick.py rotes Forces
+python3 ${CLAUDE_SKILL_DIR}/scripts/magick.py rotes --rating 1
+```
+
+Offering a player the Rotes their Spheres already reach is the single most
+useful thing you can do for someone new to Mage — `rotes <Sphere> --rating <n>`
+is that list. But a Rote is a suggestion, not a menu: if the player describes
+something not on it, resolve it with `--spheres` and do not tell them it has to
+be a named Effect.
 
 On a botch it prints the Paradox owed. Offer the Willpower point that cancels a
 botch — players forget it exists, and it is the difference between a bad night

@@ -6,14 +6,14 @@
   },
   "metadata": {
     "description": "Mage: The Ascension 2nd Edition as a Claude Code skill, built on byo-rulebook.",
-    "version": "1.1.0"
+    "version": "1.2.0"
   },
   "plugins": [
     {
       "name": "mage",
       "source": "./",
       "description": "Storyteller assistant for persistent Mage: The Ascension 2nd Edition chronicles — magick, Paradox, combat, mage creation and session state. Ships no rulebook values; reads them from your own copy.",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "license": "AGPL-3.0-or-later",
       "keywords": ["claude-code", "claude-skill", "mage-the-ascension", "world-of-darkness", "storyteller-system", "ttrpg", "tabletop-rpg", "white-wolf", "byo-rulebook"]
     }

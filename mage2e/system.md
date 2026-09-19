@@ -83,6 +83,19 @@ away — or **vulgar**, which reality itself will answer for.
 
 {{mage:table:spheres@p.295}}
 
+### Rotes
+
+The book calls them **Effects**: the named, pre-written spells each Sphere
+section ends with. A Rote is not a separate mechanic — it is an Effect somebody
+already worked out, with a name, a Sphere and a minimum rating. Casting one
+uses the same roll as casting anything else.
+
+{{mage:table:rotes@p.188-223}}
+
+Three Effects print a *range* rather than a single rating, because the same
+magick does different work at different ranks: Telekinetic Control (2–3,
+by the size of the object), Alter State (3–5) and Free the Mad Howlers (3–4).
+
 ### Casting
 
 Roll **Arete** against a difficulty set by the highest Sphere in the Effect:

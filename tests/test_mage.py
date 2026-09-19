@@ -302,5 +302,84 @@ class TestModuleSeparation(unittest.TestCase):
         self.assertIn("bos:merits_flaws", str(ctx.exception))
 
 
+@unittest.skipUnless(module_filled(), "core module not filled on this machine")
+class TestRotes(unittest.TestCase):
+    """The named Effects of Chapter Eight."""
+
+    @classmethod
+    def setUpClass(cls):
+        import magick
+        cls.M = magick
+        cls.rows = _bootstrap.get("rotes")
+
+    def test_counts_match_the_books_own_index(self):
+        # The index at printed p.292 lists the Effects per Sphere. These counts
+        # are that list; a mismatch means a heading was missed or double-read.
+        want = {"Correspondence": 16, "Entropy": 13, "Forces": 9, "Life": 13,
+                "Matter": 11, "Mind": 14, "Prime": 10, "Spirit": 15, "Time": 9}
+        got = {}
+        for _n, sphere, _r, _p in self.rows:
+            got[sphere] = got.get(sphere, 0) + 1
+        self.assertEqual(got, want)
+        self.assertEqual(len(self.rows), 110)
+
+    def test_every_rote_names_one_of_the_nine_spheres(self):
+        spheres = {r[0] for r in _bootstrap.get("spheres")}
+        for name, sphere, _r, _p in self.rows:
+            with self.subTest(rote=name):
+                self.assertIn(sphere, spheres)
+
+    def test_ratings_are_one_to_five_or_a_range_within_it(self):
+        for name, _s, rating, _p in self.rows:
+            with self.subTest(rote=name):
+                lo, _, hi = rating.partition("-")
+                lo, hi = int(lo), int(hi or lo)
+                self.assertTrue(1 <= lo <= hi <= 5, f"{name}: {rating}")
+
+    def test_only_three_effects_print_a_range(self):
+        ranged = sorted(r[0] for r in self.rows if "-" in r[2])
+        self.assertEqual(ranged, ["Alter State", "Free the Mad Howlers",
+                                  "Telekinetic Control"])
+
+    def test_pages_fall_inside_the_cited_chapter_range(self):
+        for name, _s, _r, page in self.rows:
+            with self.subTest(rote=name):
+                self.assertTrue(188 <= int(page) <= 223, f"{name}: p.{page}")
+
+    def test_lookup_is_exact_before_substring(self):
+        # "Time Sense" must resolve to itself, not collide with the four other
+        # Rotes whose names contain "Time".
+        row = self.M.find_rote("Time Sense")
+        self.assertEqual(row[0], "Time Sense")
+
+    def test_ambiguous_lookup_refuses_rather_than_guessing(self):
+        with self.assertRaises(SystemExit) as ctx:
+            self.M.find_rote("Time")
+        self.assertIn("matches", str(ctx.exception))
+
+    def test_unknown_rote_refuses(self):
+        with self.assertRaises(SystemExit):
+            self.M.find_rote("Fireball")
+
+    def test_a_range_defaults_to_its_low_end_and_says_so(self):
+        row = self.M.find_rote("Alter State")
+        spheres, ranged = self.M.rote_spheres(row)
+        self.assertTrue(ranged)
+        self.assertEqual(spheres, {"Matter": 3})
+
+    def test_a_range_accepts_a_pick_inside_it_and_refuses_outside(self):
+        row = self.M.find_rote("Alter State")
+        self.assertEqual(self.M.rote_spheres(row, 5)[0], {"Matter": 5})
+        with self.assertRaises(SystemExit):
+            self.M.rote_spheres(row, 2)
+
+    def test_casting_a_rote_matches_casting_its_spheres_by_hand(self):
+        row = self.M.find_rote("Hermes Portal")
+        spheres, _ = self.M.rote_spheres(row)
+        a = self.M.casting_difficulty(spheres, "vulgar-witnessed")["difficulty"]
+        b = self.M.casting_difficulty({"Correspondence": 4}, "vulgar-witnessed")["difficulty"]
+        self.assertEqual(a, b)
+
+
 if __name__ == "__main__":
     unittest.main()

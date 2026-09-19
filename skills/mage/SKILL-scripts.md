@@ -55,6 +55,14 @@ one of the module's cited tables.
 python3 ${CLAUDE_SKILL_DIR}/scripts/magick.py cast \
     --spheres Forces=3,Prime=2 --type vulgar-witnessed --arete 4 [--modifier -1] [--willpower]
 
+# Rotes (the book's named Effects)
+python3 ${CLAUDE_SKILL_DIR}/scripts/magick.py cast --rote "Hermes Portal" --type vulgar --arete 4
+python3 ${CLAUDE_SKILL_DIR}/scripts/magick.py cast --rote "Alter State" --rating 5 --type coincidental --arete 5
+python3 ${CLAUDE_SKILL_DIR}/scripts/magick.py rotes              # all 110
+python3 ${CLAUDE_SKILL_DIR}/scripts/magick.py rotes Spirit
+python3 ${CLAUDE_SKILL_DIR}/scripts/magick.py rotes --rating 2
+python3 ${CLAUDE_SKILL_DIR}/scripts/magick.py rotes --name gauntlet
+
 python3 ${CLAUDE_SKILL_DIR}/scripts/magick.py spheres Forces    # or --all
 python3 ${CLAUDE_SKILL_DIR}/scripts/magick.py paradox --type vulgar --highest 3
 python3 ${CLAUDE_SKILL_DIR}/scripts/magick.py difficulties      # the modifier chart
@@ -68,6 +76,13 @@ python3 ${CLAUDE_SKILL_DIR}/scripts/magick.py degrees
 `cast` does the whole sequence: difficulty from the highest Sphere plus the
 Effect type, modifiers clamped to ±3 and the difficulty to 3–10, the Arete
 roll, the damage/duration line on a success, and the Paradox owed on a botch.
+
+`--rote` fills the Spheres from the book, so `--rote` and `--spheres` are
+mutually exclusive. Lookup is exact-match first, then substring, and **refuses
+rather than guessing** when a name is ambiguous — `--rote Time` matches five
+Effects and errors instead of picking one. Three Effects print a rating range
+(`Telekinetic Control` 2–3, `Alter State` 3–5, `Free the Mad Howlers` 3–4);
+those default to the low end, say so, and take `--rating` to override.
 
 `--type` is `coincidental`, `vulgar` or `vulgar-witnessed`. Choosing between
 them is the Storyteller's call and the single most consequential ruling in the

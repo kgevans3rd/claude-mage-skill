@@ -10,12 +10,12 @@ fills in the values locally, outside version control. What this repository
 contains is the shape of the game and the code that runs it.
 
 ```
-mage2e/            core rulebook — 29 cited tables, no values
+mage2e/            core rulebook — 30 cited tables, no values
 bookofshadows/     players guide — Merits and Flaws (not in the core book)
 technocracy/       Technocracy sourcebook — 26 more Merits and Flaws
 skills/mage/       the Claude Code skill: Storyteller prompt, scripts, templates
 tools/             fill a module from your book; render or extract cited pages
-tests/             31 tests; the rules-logic third runs with no book at all
+tests/             42 tests; the rules-logic part runs with no book at all
 ```
 
 One module per book, because a module is scoped to one printing: its title,
@@ -114,6 +114,8 @@ Arete 4: 4d10 vs diff 8: [6, 3, 7, 1] → BOTCH by 1  [1 one cancelled]
 
 ```bash
 python3 skills/mage/scripts/combat.py attack --pool 6 --weapon "Pistol, Lt."
+python3 skills/mage/scripts/magick.py cast --rote "Hermes Portal" --type vulgar --arete 4
+python3 skills/mage/scripts/magick.py rotes Spirit --rating 3
 python3 skills/mage/scripts/character.py merits --category Supernatural
 python3 skills/mage/scripts/character.py validate --file mage.json
 python3 skills/mage/scripts/lookup.py --search quintessence
