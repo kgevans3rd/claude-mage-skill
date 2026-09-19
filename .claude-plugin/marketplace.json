@@ -15,7 +15,7 @@
       "description": "Storyteller assistant for persistent Mage: The Ascension 2nd Edition chronicles — magick, Paradox, combat, mage creation and session state. Ships no rulebook values; reads them from your own copy.",
       "version": "1.0.0",
       "license": "AGPL-3.0-or-later",
-      "keywords": ["mage", "mage-the-ascension", "world-of-darkness", "storyteller", "ttrpg"]
+      "keywords": ["claude-code", "claude-skill", "mage-the-ascension", "world-of-darkness", "storyteller-system", "ttrpg", "tabletop-rpg", "white-wolf", "byo-rulebook"]
     }
   ]
 }
