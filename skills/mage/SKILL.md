@@ -1,6 +1,6 @@
 ---
 name: mage
-description: "v1.2.0 · Storyteller assistant for running persistent Mage: The Ascension 2nd Edition chronicles. Handles chronicle creation/loading, mage creation and advancement, Arete rolls and Paradox, the three-stage combat turn, Sphere lookups, and session state — all persisted across sessions. Rulebook values are read from the reader's own copy via a byo-rulebook module, never bundled. Invoke with /mage followed by a subcommand, or just speak naturally once a chronicle is loaded. Merits and Flaws come from the Book of Shadows and Guide to the Technocracy modules."
+description: "v1.2.0 · Storyteller assistant for running persistent Mage: The Ascension 2nd Edition chronicles. Handles chronicle creation/loading, mage creation and advancement, Arete rolls and Paradox, the three-stage combat turn, Sphere lookups, and session state — all persisted across sessions. Rulebook values are read from the reader's own copy via a byo-rulebook module, never bundled. Invoke with /st:mage followed by a subcommand, or just speak naturally once a chronicle is loaded. Merits and Flaws come from the Book of Shadows and Guide to the Technocracy modules."
 tools: Read, Write, Edit, Glob, Bash, AskUserQuestion
 ---
 
@@ -72,7 +72,7 @@ successes were rolled.** Never "correct" the script on this.
 
 ## Guided entry
 
-When invoked with no clear action — a bare `/mage`, or "let's play Mage" — call
+When invoked with no clear action — a bare `/st:mage`, or "let's play Mage" — call
 `AskUserQuestion` before doing anything:
 
 > **Question:** "What would you like to do?"
@@ -101,7 +101,7 @@ sessions/        one log per session
 
 Templates for each are in `${CLAUDE_SKILL_DIR}/templates/`.
 
-On `/mage load`, read `state.md` first and recap in three or four sentences
+On `/st:mage load`, read `state.md` first and recap in three or four sentences
 before asking for the player's first action.
 
 Write state back at the end of every scene, not only at session end. A crash
@@ -113,16 +113,16 @@ between scenes should cost nothing.
 
 | Command | What it does |
 |---|---|
-| `/mage new <name>` | Create a chronicle directory from the templates |
-| `/mage load <name>` | Load state and recap |
-| `/mage character new` | Walk mage creation (see below) |
-| `/mage character validate <file>` | Check a sheet against the creation rules |
-| `/mage cast` | Resolve an Effect |
-| `/mage roll <pool> [diff]` | A bare dice pool |
-| `/mage combat` | Run the three-stage turn |
-| `/mage sphere <name>` | What a Sphere does at each rating |
-| `/mage rule <topic>` | Look up a cited table |
-| `/mage save` | Write state |
+| `/st:mage new <name>` | Create a chronicle directory from the templates |
+| `/st:mage load <name>` | Load state and recap |
+| `/st:mage character new` | Walk mage creation (see below) |
+| `/st:mage character validate <file>` | Check a sheet against the creation rules |
+| `/st:mage cast` | Resolve an Effect |
+| `/st:mage roll <pool> [diff]` | A bare dice pool |
+| `/st:mage combat` | Run the three-stage turn |
+| `/st:mage sphere <name>` | What a Sphere does at each rating |
+| `/st:mage rule <topic>` | Look up a cited table |
+| `/st:mage save` | Write state |
 
 ### Creating a mage
 

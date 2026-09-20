@@ -56,7 +56,7 @@ python3 -m unittest discover -s tests
 ```
 
 Then add the plugin to Claude Code (`.claude-plugin/marketplace.json` is at the
-repository root) and invoke `/mage`.
+repository root) and invoke `/st:mage`.
 
 Needs Python 3.8+ and poppler (`pdftotext`, `pdftoppm`). No third-party
 packages.
@@ -91,12 +91,12 @@ inventing them.
 ## Using it
 
 ```
-/mage                        guided menu
-/mage new <chronicle>        create a chronicle
-/mage load <chronicle>       load and recap
-/mage character new          walk mage creation
-/mage cast                   resolve an Effect
-/mage combat                 run the three-stage turn
+/st:mage                        guided menu
+/st:mage new <chronicle>        create a chronicle
+/st:mage load <chronicle>       load and recap
+/st:mage character new          walk mage creation
+/st:mage cast                   resolve an Effect
+/st:mage combat                 run the three-stage turn
 ```
 
 The scripts work standalone too:
@@ -142,7 +142,7 @@ templates, a plugin manifest — not a patch to it. `claude-dnd-skill`'s
 `ruleset` field selects between D&D 5e 2014 and 2024 and its engine assumes d20
 throughout; Mage is a d10 dice-pool game with no AC, no hit points and no
 initiative order in the 5e sense. Sharing a codebase would mean special-casing
-both. Installed side by side, `/dm:dnd` and `/mage` coexist.
+both. Installed side by side, `/dm:dnd` and `/st:mage` coexist.
 
 What it does borrow is the layout and the conventions, so anything learned from
 one repository applies to the other.

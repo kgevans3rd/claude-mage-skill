@@ -47,12 +47,27 @@ def module_dir() -> Path:
 
 
 def supplement_dirs():
-    """Every supplement module present on this machine, in declared order."""
+    """Every supplement module present on this machine, in declared order.
+
+    Looked for beside the CORE module rather than under REPO_ROOT, so that
+    $MAGE_MODULE moves the whole set. Installed as a plugin, this skill runs
+    from a git clone that by design carries no rulebook values, and the reader
+    points $MAGE_MODULE at their own filled copy; deriving supplements from
+    REPO_ROOT instead would resolve the core book and quietly find no Merits,
+    Flaws or Rotes, which reads as "not installed" rather than "wrong path".
+    """
+    roots, seen = [], set()
+    for root in (module_dir().parent, REPO_ROOT):
+        if root not in seen:
+            seen.add(root)
+            roots.append(root)
     out = []
     for name in SUPPLEMENTS:
-        d = REPO_ROOT / name
-        if (d / "schema.json").is_file():
-            out.append((name, d))
+        for root in roots:
+            d = root / name
+            if (d / "schema.json").is_file():
+                out.append((name, d))
+                break
     return out
 
 

@@ -1,11 +1,21 @@
 {
-  "name": "mage",
+  "name": "st",
   "version": "1.2.0",
-  "description": "Storyteller assistant for running persistent Mage: The Ascension 2nd Edition chronicles. Chronicle creation/loading, mage creation and advancement, Arete rolls and Paradox, the three-stage combat turn, Sphere lookups and session state. Rulebook values are read from the reader's own copy of the book through a byo-rulebook module and are never bundled. Provides the `mage` skill; invoke as /mage.",
+  "description": "Storyteller assistant for running persistent Mage: The Ascension 2nd Edition chronicles. Chronicle creation/loading, mage creation and advancement, Arete rolls and Paradox, the three-stage combat turn, Sphere lookups and session state. Rulebook values are read from the reader's own copy of the book through a byo-rulebook module and are never bundled. Provides the `mage` skill; invoke as /st:mage.",
   "author": {
     "name": "kgevans3rd"
   },
   "homepage": "https://github.com/kgevans3rd/byo-rulebook",
   "license": "AGPL-3.0-or-later",
-  "keywords": ["claude-code", "claude-skill", "mage-the-ascension", "world-of-darkness", "storyteller-system", "ttrpg", "tabletop-rpg", "white-wolf", "byo-rulebook"]
+  "keywords": [
+    "claude-code",
+    "claude-skill",
+    "mage-the-ascension",
+    "world-of-darkness",
+    "storyteller-system",
+    "ttrpg",
+    "tabletop-rpg",
+    "white-wolf",
+    "byo-rulebook"
+  ]
 }
